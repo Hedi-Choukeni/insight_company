@@ -1,32 +1,158 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, ExternalLink, X, Sparkles, Filter } from 'lucide-react';
+import { 
+  Play, Pause, Volume2, VolumeX, Maximize2, X, Sparkles, 
+  ArrowUpRight, Film, CheckCircle2 
+} from 'lucide-react';
 import { PORTFOLIO_DATA } from '../../data/agencyData';
 import { PortfolioItem } from '../../types';
 
+interface VideoCardProps {
+  project: PortfolioItem;
+  index: number;
+  onOpenModal: (project: PortfolioItem) => void;
+}
+
+const VideoCard: React.FC<VideoCardProps> = ({ project, index, onOpenModal }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const togglePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const toggleSound = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 35 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.7, delay: index * 0.15 }}
+      className="group relative flex flex-col rounded-3xl overflow-hidden bg-brand-forest/40 border border-brand-neon/25 hover:border-brand-neon transition-all duration-500 shadow-glass"
+    >
+      {/* Video Container */}
+      <div 
+        className="relative w-full aspect-[9/16] sm:aspect-[4/5] md:aspect-[9/16] max-h-[580px] bg-black overflow-hidden cursor-pointer"
+        onClick={() => onOpenModal(project)}
+      >
+        <video
+          ref={videoRef}
+          src={project.videoUrl}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+        />
+
+        {/* Ambient Gradient Vignette */}
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-brand-dark/40 pointer-events-none" />
+
+        {/* Top Badges */}
+        <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
+          <span className="px-3 py-1 rounded-full text-[10px] font-mono tracking-widest bg-brand-dark/80 backdrop-blur-md text-brand-bright border border-brand-neon/40 uppercase flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-bright animate-ping" />
+            {project.category}
+          </span>
+          <span className="px-2.5 py-1 rounded-full text-[10px] font-mono text-brand-muted bg-brand-dark/70 backdrop-blur-md">
+            {project.year}
+          </span>
+        </div>
+
+        {/* Interactive Floating Video Controls */}
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-10">
+          <div className="flex items-center gap-2">
+            {/* Play/Pause Button */}
+            <button
+              onClick={togglePlay}
+              className="p-2.5 rounded-full bg-brand-dark/80 hover:bg-brand-emerald text-white border border-brand-neon/30 transition-all duration-300 backdrop-blur-md hover:scale-110"
+              aria-label={isPlaying ? 'Pause video' : 'Play video'}
+            >
+              {isPlaying ? <Pause className="w-4 h-4 text-brand-bright" /> : <Play className="w-4 h-4 text-brand-bright fill-brand-bright" />}
+            </button>
+
+            {/* Mute/Unmute Button */}
+            <button
+              onClick={toggleSound}
+              className="p-2.5 rounded-full bg-brand-dark/80 hover:bg-brand-emerald text-white border border-brand-neon/30 transition-all duration-300 backdrop-blur-md hover:scale-110"
+              aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+            >
+              {isMuted ? <VolumeX className="w-4 h-4 text-brand-muted" /> : <Volume2 className="w-4 h-4 text-brand-bright" />}
+            </button>
+          </div>
+
+          {/* Expand Theater Modal Button */}
+          <button
+            onClick={() => onOpenModal(project)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-bright text-black font-mono text-xs font-bold shadow-neon hover:scale-105 transition-transform"
+          >
+            <Maximize2 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">THEATER</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Card Info Details */}
+      <div className="p-6 flex flex-col justify-between flex-1 bg-gradient-to-b from-brand-forest/60 to-brand-dark border-t border-brand-neon/15">
+        <div>
+          <span className="text-[11px] font-mono text-brand-neon uppercase tracking-wider block mb-1">
+            // {project.client}
+          </span>
+          <h3 className="font-display font-bold text-xl md:text-2xl text-white group-hover:text-brand-bright transition-colors uppercase tracking-tight mb-2">
+            {project.title}
+          </h3>
+          <p className="text-xs md:text-sm text-brand-muted leading-relaxed line-clamp-2">
+            {project.description}
+          </p>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-brand-neon/10">
+          {project.tags.map((tag, idx) => (
+            <span
+              key={idx}
+              className="text-[10px] font-mono tracking-wider uppercase text-brand-bright bg-brand-emerald/40 px-2.5 py-1 rounded border border-brand-neon/20"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 export const PortfolioSection: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [activeModalProject, setActiveModalProject] = useState<PortfolioItem | null>(null);
-
-  const categories = ['All', 'Branding', 'Social Media', 'Visual Identity', 'Digital Campaigns', 'Web & Interactive'];
-
-  const filteredProjects = selectedCategory === 'All'
-    ? PORTFOLIO_DATA
-    : PORTFOLIO_DATA.filter(p => p.category === selectedCategory);
+  const [modalProject, setModalProject] = useState<PortfolioItem | null>(null);
 
   return (
     <section id="portfolio" className="relative py-28 md:py-36 px-6 md:px-12 bg-brand-dark overflow-hidden">
       {/* Ambient background light */}
-      <div className="absolute top-1/4 left-1/4 w-[650px] h-[650px] rounded-full blur-[190px] bg-brand-emerald/20 pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] rounded-full blur-[200px] bg-brand-emerald/25 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-[1px] bg-brand-neon" />
               <span className="text-xs font-mono tracking-[0.25em] text-brand-neon uppercase">
-                // 03. CURATED SHOWCASE
+                // 03. SELECTED WORK & PRODUCTIONS
               </span>
             </div>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-white tracking-tight leading-tight">
@@ -39,182 +165,85 @@ export const PortfolioSection: React.FC = () => {
 
           <div className="max-w-md">
             <p className="text-sm md:text-base text-brand-muted leading-relaxed">
-              A curated selection of creative concepts, identity systems, and visual narratives designed to captivate audience imagination.
+              Explore our real motion campaigns, cinematic reels, and visual productions crafted for ambitious brands.
             </p>
-            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-forest/60 border border-brand-neon/20 text-[11px] font-mono text-brand-neon">
-              <Sparkles className="w-3 h-3 text-brand-bright" />
-              <span>Agency Creative Showcase Concepts</span>
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-forest/80 border border-brand-neon/30 text-[11px] font-mono text-brand-bright shadow-neon">
+              <Film className="w-3.5 h-3.5 text-brand-bright" />
+              <span>Official Video Reel Showcase</span>
             </div>
           </div>
         </div>
 
-        {/* Category Filter Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-12 no-scrollbar">
-          {categories.map((cat) => {
-            const isSelected = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`relative px-5 py-2.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all duration-300 flex-shrink-0 cursor-pointer ${
-                  isSelected
-                    ? 'text-black font-bold bg-brand-bright shadow-neon'
-                    : 'text-brand-muted bg-brand-forest/40 hover:text-white hover:bg-brand-emerald/30 border border-brand-neon/15'
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
+        {/* 3-Column Video Showcase Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {PORTFOLIO_DATA.map((project, idx) => (
+            <VideoCard
+              key={project.id}
+              project={project}
+              index={idx}
+              onOpenModal={(p) => setModalProject(p)}
+            />
+          ))}
         </div>
 
-        {/* Editorial Asymmetric Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-stretch"
-        >
-          {filteredProjects.map((project, idx) => {
-            // Asymmetric layout logic for high-end editorial feel
-            const colSpan = idx % 3 === 0 
-              ? 'lg:col-span-8' 
-              : (idx % 3 === 1 ? 'lg:col-span-4' : 'lg:col-span-6');
-
-            return (
-              <motion.div
-                layout
-                key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className={`${colSpan} group cursor-pointer flex flex-col`}
-                onClick={() => setActiveModalProject(project)}
-                data-cursor="VIEW"
-              >
-                <div className="relative overflow-hidden rounded-3xl bg-brand-forest/50 border border-brand-neon/20 group-hover:border-brand-neon/60 transition-all duration-500 shadow-glass flex-1 flex flex-col">
-                  {/* Image Container with Zoom & Reveal */}
-                  <div className="relative w-full h-72 sm:h-96 lg:h-[420px] overflow-hidden bg-brand-dark">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out group-hover:scale-108 group-hover:brightness-105"
-                    />
-
-                    {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/30 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300" />
-
-                    {/* Top Badges */}
-                    <div className="absolute top-5 left-5 right-5 flex items-center justify-between z-10">
-                      <span className="px-3 py-1 rounded-full text-[11px] font-mono tracking-widest bg-brand-dark/80 backdrop-blur-md text-brand-bright border border-brand-neon/30 uppercase">
-                        {project.category}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-mono text-brand-muted bg-brand-dark/60 backdrop-blur-md">
-                        {project.year}
-                      </span>
-                    </div>
-
-                    {/* Floating Hover Action Circle */}
-                    <div className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-brand-bright text-black flex items-center justify-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-neon z-20">
-                      <ArrowUpRight className="w-5 h-5 font-bold" />
-                    </div>
-                  </div>
-
-                  {/* Project Details */}
-                  <div className="p-6 md:p-8 flex flex-col justify-between flex-1 bg-gradient-to-b from-brand-forest/60 to-brand-dark/80">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2 text-xs font-mono text-brand-neon/80">
-                        <span>{project.client}</span>
-                      </div>
-                      <h3 className="font-display font-bold text-2xl md:text-3xl text-white group-hover:text-brand-bright transition-colors uppercase tracking-tight">
-                        {project.title}
-                      </h3>
-                      <p className="text-xs md:text-sm text-brand-muted mt-2 line-clamp-2 leading-relaxed">
-                        {project.description}
-                      </p>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-brand-neon/15">
-                      {project.tags.map((tag, tIdx) => (
-                        <span
-                          key={tIdx}
-                          className="text-[10px] font-mono tracking-wider uppercase text-brand-muted/80 bg-brand-dark/60 px-2.5 py-1 rounded border border-brand-neon/10"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-
-        {/* Project Detail Modal */}
+        {/* Theater Video Modal */}
         <AnimatePresence>
-          {activeModalProject && (
+          {modalProject && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-xl"
-              onClick={() => setActiveModalProject(null)}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl"
+              onClick={() => setModalProject(null)}
             >
               <motion.div
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="relative max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-3xl bg-brand-dark border border-brand-neon/40 shadow-neon-lg p-6 sm:p-8"
+                className="relative max-w-4xl w-full max-h-[92vh] overflow-y-auto rounded-3xl bg-brand-dark border-2 border-brand-neon/50 shadow-neon-lg p-6 sm:p-8"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Close Button */}
                 <button
-                  onClick={() => setActiveModalProject(null)}
-                  className="absolute top-6 right-6 p-2 rounded-full bg-brand-forest/80 text-brand-bright hover:bg-brand-emerald hover:text-white transition-colors"
+                  onClick={() => setModalProject(null)}
+                  className="absolute top-6 right-6 p-2.5 rounded-full bg-brand-forest/90 text-brand-bright hover:bg-brand-emerald hover:text-white transition-colors z-20"
                   aria-label="Close modal"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
-                <div className="overflow-hidden rounded-2xl mb-6 max-h-80 w-full">
-                  <img
-                    src={activeModalProject.image}
-                    alt={activeModalProject.title}
-                    className="w-full h-full object-cover"
+                {/* Theater Video Player */}
+                <div className="overflow-hidden rounded-2xl mb-6 bg-black flex items-center justify-center max-h-[65vh]">
+                  <video
+                    src={modalProject.videoUrl}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="w-full max-h-[65vh] object-contain rounded-2xl"
                   />
                 </div>
 
+                {/* Project Metadata */}
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-mono bg-brand-emerald/40 text-brand-bright border border-brand-neon/30">
-                    {activeModalProject.category}
+                  <span className="px-3 py-1 rounded-full text-xs font-mono bg-brand-emerald/50 text-brand-bright border border-brand-neon/30">
+                    {modalProject.category}
                   </span>
-                  <span className="text-xs font-mono text-brand-muted">{activeModalProject.year}</span>
+                  <span className="text-xs font-mono text-brand-muted">{modalProject.year}</span>
                 </div>
 
-                <h3 className="font-display font-extrabold text-3xl sm:text-4xl text-white uppercase mb-4">
-                  {activeModalProject.title}
+                <h3 className="font-display font-extrabold text-2xl sm:text-4xl text-white uppercase mb-3">
+                  {modalProject.title}
                 </h3>
 
                 <p className="text-sm sm:text-base text-brand-muted-light leading-relaxed mb-6">
-                  {activeModalProject.description}
+                  {modalProject.description}
                 </p>
 
-                <div className="p-4 rounded-xl bg-brand-forest/40 border border-brand-neon/20 mb-6">
-                  <span className="text-xs font-mono text-brand-neon block mb-1 uppercase tracking-wider">
-                    // Creative Concept Disclosure
-                  </span>
-                  <p className="text-xs text-brand-muted leading-relaxed">
-                    This case study represents an editorial creative benchmark demonstrating Insight Company's art direction, typography systems, and digital storytelling standards.
-                  </p>
-                </div>
-
                 <div className="flex flex-wrap gap-2 mb-8">
-                  {activeModalProject.tags.map((t, idx) => (
+                  {modalProject.tags.map((t, idx) => (
                     <span key={idx} className="text-xs font-mono text-brand-bright bg-brand-emerald/30 px-3 py-1 rounded-md border border-brand-neon/20">
-                      {t}
+                      #{t}
                     </span>
                   ))}
                 </div>
@@ -222,10 +251,10 @@ export const PortfolioSection: React.FC = () => {
                 <div className="flex items-center gap-4">
                   <a
                     href="#contact"
-                    onClick={() => setActiveModalProject(null)}
-                    className="flex-1 py-3.5 rounded-full text-center font-bold text-xs tracking-widest uppercase bg-brand-bright text-black shadow-neon transition-transform active:scale-95"
+                    onClick={() => setModalProject(null)}
+                    className="flex-1 py-4 rounded-full text-center font-display font-bold text-xs md:text-sm tracking-widest uppercase bg-brand-bright text-black shadow-neon transition-transform active:scale-95 cursor-pointer"
                   >
-                    DISCUSS A SIMILAR PROJECT
+                    DISCUSS A VIDEO PRODUCTION PROJECT
                   </a>
                 </div>
               </motion.div>
@@ -236,4 +265,3 @@ export const PortfolioSection: React.FC = () => {
     </section>
   );
 };
-

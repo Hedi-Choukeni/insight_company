@@ -12,14 +12,14 @@ export interface ServiceItem {
 export interface PortfolioItem {
   id: string;
   title: string;
-  category: 'Branding' | 'Social Media' | 'Visual Identity' | 'Digital Campaigns' | 'Web & Interactive';
+  category: string;
   year: string;
   client: string;
   description: string;
   tags: string[];
-  image: string;
-  accentColor?: string;
-  aspectRatio?: 'landscape' | 'portrait' | 'square';
+  videoUrl: string;
+  posterImage?: string;
+  aspectRatio?: 'portrait' | 'landscape' | 'square';
   isFeatured?: boolean;
 }
 
@@ -47,4 +47,3 @@ export interface ContactFormData {
   message: string;
   serviceInterest: string;
 }
-

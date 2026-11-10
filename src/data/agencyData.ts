@@ -91,76 +91,40 @@ export const SERVICES_DATA: ServiceItem[] = [
 
 export const PORTFOLIO_DATA: PortfolioItem[] = [
   {
-    id: 'proj-01',
-    title: 'Aura Spatial Systems',
-    category: 'Branding',
+    id: 'proj-video-01',
+    title: 'Brand Story & Creative Direction',
+    category: 'Commercial',
     year: '2026',
-    client: 'Design Concept Showcase',
-    description: 'Minimalist geometric brand identity with dark emerald tones, precision typography, and architectural grid structure.',
-    tags: ['Brand Identity', 'Geometric Typography', 'Art Direction'],
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop',
-    aspectRatio: 'landscape',
-    isFeatured: true
-  },
-  {
-    id: 'proj-02',
-    title: 'Lumina Digital Narrative',
-    category: 'Social Media',
-    year: '2026',
-    client: 'Creative Editorial Showcase',
-    description: 'High-converting social media grid architecture with neon illumination accents, kinetic typography, and motion reels.',
-    tags: ['Feed Architecture', 'Editorial Design', 'Motion Graphics'],
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop',
+    client: 'Insight Company Production',
+    description: 'Cinematic commercial production showcasing bold brand storytelling, dynamic editing, and custom sound design engineered for modern digital audiences.',
+    videoUrl: '/videos/reel_1.mp4',
+    tags: ['Brand Commercial', 'Creative Direction', 'Cinematic Motion'],
     aspectRatio: 'portrait',
     isFeatured: true
   },
   {
-    id: 'proj-03',
-    title: 'Verve Botanicals',
+    id: 'proj-video-02',
+    title: 'Dynamic Visual Narrative',
+    category: 'Motion & Reels',
+    year: '2026',
+    client: 'Insight Company Production',
+    description: 'High-impact social-first motion reel designed to command attention, convey high-energy aesthetics, and drive authentic community engagement.',
+    videoUrl: '/videos/reel_2.mp4',
+    tags: ['Social-First Video', 'Kinetic Motion', 'Visual Storytelling'],
+    aspectRatio: 'portrait',
+    isFeatured: true
+  },
+  {
+    id: 'proj-video-03',
+    title: 'Editorial Identity & Motion',
     category: 'Visual Identity',
-    year: '2025',
-    client: 'Eco-Luxury Showcase',
-    description: 'Deep forest green packaging identity, gold foil stamping accents, and bespoke luxury packaging guidelines.',
-    tags: ['Packaging Design', 'Visual Identity', 'Sustainable Luxury'],
-    image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1200&auto=format&fit=crop',
-    aspectRatio: 'square',
-    isFeatured: false
-  },
-  {
-    id: 'proj-04',
-    title: 'Kinesis Kinetic Campaign',
-    category: 'Digital Campaigns',
-    year: '2025',
-    client: 'Performance Showcase',
-    description: 'Omnichannel multi-city campaign rollout balancing high-voltage neon visuals with minimalist editorial typography.',
-    tags: ['Launch Campaign', 'Key Visuals', 'Digital Billboards'],
-    image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200&auto=format&fit=crop',
-    aspectRatio: 'landscape',
-    isFeatured: true
-  },
-  {
-    id: 'proj-05',
-    title: 'Monolith Architectural Studio',
-    category: 'Web & Interactive',
     year: '2026',
-    client: 'Interactive Experience',
-    description: 'Cinematic digital portfolio featuring smooth webGL canvas transitions, custom cursor physics, and micro-interactions.',
-    tags: ['Web Design', 'Micro-Interactions', 'Frontend Engineering'],
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop',
-    aspectRatio: 'landscape',
-    isFeatured: false
-  },
-  {
-    id: 'proj-06',
-    title: 'Synergy Future Forum',
-    category: 'Branding',
-    year: '2025',
-    client: 'Conference & Event Concept',
-    description: 'Identity system composed of angular geometric lines, green lasers, and modular stage typography.',
-    tags: ['Spatial Branding', 'Monogram Design', 'Event Visuals'],
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop',
+    client: 'Insight Company Production',
+    description: 'Avant-garde visual identity and motion piece establishing market leadership through refined rhythm, typography, and aesthetic precision.',
+    videoUrl: '/videos/reel_3.mp4',
+    tags: ['Visual Identity', 'Digital Presence', 'Aesthetic Direction'],
     aspectRatio: 'portrait',
-    isFeatured: false
+    isFeatured: true
   }
 ];
 
@@ -225,4 +189,3 @@ export const WHY_US_PILLARS: PillarItem[] = [
     iconName: 'Zap'
   }
 ];
-
