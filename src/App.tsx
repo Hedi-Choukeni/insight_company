@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { CustomCursor } from './components/common/CustomCursor';
 import { GeometricGrid } from './components/common/GeometricGrid';
 import { TextMarquee } from './components/common/TextMarquee';
@@ -79,6 +80,9 @@ export const App: React.FC = () => {
 
       {/* Footer */}
       <Footer />
+
+      {/* Vercel Analytics */}
+      <Analytics />
     </div>
   );
 };
